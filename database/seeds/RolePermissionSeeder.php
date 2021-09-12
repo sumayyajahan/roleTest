@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -12,10 +14,14 @@ class RolePermissionSeeder extends Seeder
     public function run()
     {
         //create roles
-        $roleAdmin = Role::create(['nam' => 'admin']);
-
-        //for permission list
+        $roleAdmin = Role::create(['name' => 'admin']);
+        $roleSuperAdmin = Role::create(['name' => 'superadmin']);
+        $roleEditor = Role::create(['name' => 'editor']);
+        $roleUser = Role::create(['name' => 'user']);
+        //permission list
         $permissions = [
+            //dashboard
+            'dashboard.view',
 
             //medimate app permissions
             'backend.create',
@@ -24,5 +30,15 @@ class RolePermissionSeeder extends Seeder
             'backend.delete',
             'backend.approve',
         ];
+
+        //create and assign permission
+        for($i=0; $i < count($permissions); $i++){
+
+           $permission = Permission::create(['name' => $permissions[$i]]);
+           $roleSuperAdmin->givePermissionTo($permission);
+           $permission->assignRole($roleSuperAdmin);
+
+        }
+
     }
 }
